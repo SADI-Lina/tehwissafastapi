@@ -1,0 +1,1 @@
+from routes.tourist_user import TouristUserCreate
