@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
+from .wilaya import Wilaya
 
 class Adresse(Base):
     __tablename__ = "adresse"

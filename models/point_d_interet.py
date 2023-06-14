@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
-
+from .adresse import Adresse
+from .theme import Theme
+from .categorie import Categorie
 class PointDInteret(Base):
     __tablename__ = "point_d_interet"
 

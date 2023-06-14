@@ -1,1 +1,1 @@
-from schemas.tourist_user import User
+from schemas.tourist_user import TouristUser
