@@ -2,9 +2,8 @@ from pydantic import BaseModel
 
 class EvenementBase(BaseModel):
     nom: str
-    adresse: str
-    type_event: str
-    id_point_in: int
+    type_event_id: int
+    id_wilaya: int
 
 class EvenementCreate(EvenementBase):
     pass

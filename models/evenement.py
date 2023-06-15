@@ -7,8 +7,8 @@ class Evenement(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     nom = Column(Text)
-    adresse = Column(Text)
-    type_event = Column(Text)
-    id_point_in = Column(Integer, ForeignKey("point_d_interet.id"))
+    type_event_id = Column(Integer, ForeignKey("type_event.id"))
+    id_wilaya = Column(Integer, ForeignKey("wilaya.code"))
 
-    point_d_interet = relationship("PointDInteret", backref="evenements")
+    type_event = relationship("TypeEvent", backref="evenements")
+    wilaya = relationship("Wilaya", backref="evenements")
