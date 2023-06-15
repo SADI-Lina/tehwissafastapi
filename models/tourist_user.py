@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
 
+from .adresse import Adresse
 class TouristUser(Base):
     __tablename__ = "tourist_user"
 
@@ -15,3 +16,8 @@ class TouristUser(Base):
     email = Column(Text)
 
     adresse = relationship("Adresse", backref="tourist_users")
+
+    def check_password(self, password):
+        return self.password == password
+ 
+

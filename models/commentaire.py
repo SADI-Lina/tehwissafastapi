@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
 
+from .tourist_user import TouristUser
+
 class Commentaire(Base):
     __tablename__ = "commentaire"
 
