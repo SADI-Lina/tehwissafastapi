@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
 
+from .region import Region
+
 class RegionalUser(Base):
     __tablename__ = "regional_user"
 
