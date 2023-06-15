@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
@@ -11,3 +12,5 @@ class Adresse(Base):
     info_supp = Column(Text)
 
     wilaya = relationship("Wilaya", backref="adresses")
+
+

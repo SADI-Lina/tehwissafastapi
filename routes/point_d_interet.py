@@ -1,17 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException , Form
 from sqlalchemy.orm import Session
 
 from config.db import get_db
 from schemas.point_d_interet import PointDInteretCreate, PointDInteret
 from models.point_d_interet import PointDInteret as DBPointDInteret
+from schemas.horaires_acces import HorairesAccesCreate, HorairesAcces
+from models.horaires_acces import HorairesAcces as DBHorairesAcces
+from routes.adresse import get_adresses
+from models.adresse import Adresse
+from models.categorie import Categorie
+from models.theme import Theme
 
-router = APIRouter()
+router = APIRouter(tags=["PointDInterets"])
+
 
 @router.post("/points_d_interet", response_model=PointDInteret)
 def create_point_d_interet(point: PointDInteretCreate, db: Session = Depends(get_db)):
     db_point = DBPointDInteret(
         description=point.description,
         nom=point.nom,
+        Dimanche = point.Dimanche,
+        Lundi = point.Lundi,
+        Mardi = point.Mardi,
+        Mercredi = point.Mercredi,
+        Jeudi = point.Jeudi,
+        Vendredi = point.Vendredi,
+        Samedi = point.Samedi, 
         nbr_visites=point.nbr_visites,
         adresse_id=point.adresse_id,
         theme_id=point.theme_id,
@@ -21,6 +36,48 @@ def create_point_d_interet(point: PointDInteretCreate, db: Session = Depends(get
     db.commit()
     db.refresh(db_point)
     return db_point
+
+
+@router.get("/points_d_interet", response_model=List[PointDInteret])
+def get_all_points_d_interet(db: Session = Depends(get_db)):
+    points = db.query(DBPointDInteret).all()
+    return points
+
+
+@router.get("/points_d_interet/filtre/{categorie_id}", response_model=List[PointDInteret])
+def get_points_d_interet_by_category(categorie_id: int, db: Session = Depends(get_db)):
+    points = db.query(DBPointDInteret).filter(DBPointDInteret.categorie_id == categorie_id).all()
+    
+    if not points:
+        raise HTTPException(status_code=404, detail="No points of interest found for the specified category")
+    
+    return points
+
+
+
+@router.get("/points_d_interet/filtre/{theme_id}", response_model=List[PointDInteret])
+def get_points_d_interet_by_theme(theme_id: int, db: Session = Depends(get_db)):
+    points = db.query(DBPointDInteret).filter(DBPointDInteret.theme_id == theme_id).all()
+    
+    if not points:
+        raise HTTPException(status_code=404, detail="No points of interest found for the specified theme")
+    
+    return points
+
+
+from sqlalchemy import or_
+
+@router.get("/points_d_interet/recherche/{keywords}", response_model=List[PointDInteret])
+def search_point_d_interet(keywords: str, db: Session = Depends(get_db)):
+    search_results = db.query(DBPointDInteret).filter(
+        or_(
+            DBPointDInteret.description.ilike(f"%{keywords}%"),
+            DBPointDInteret.nom.ilike(f"%{keywords}%")
+        )
+    ).all()
+
+    return search_results
+
 
 @router.get("/points_d_interet/{point_id}", response_model=PointDInteret)
 def get_point_d_interet(point_id: int, db: Session = Depends(get_db)):
