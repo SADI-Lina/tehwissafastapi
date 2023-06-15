@@ -1,11 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 
 from config.db import get_db
 from schemas.adresse import AdresseCreate, Adresse
 from models.adresse import Adresse as DBAdresse
 
-router = APIRouter()
+router = APIRouter( tags=["Adresses"])
+
+
+
+
+@router.get("/adresse", response_model=List[Adresse])
+def get_all_adresse(db: Session = Depends(get_db)):
+    points = db.query(DBAdresse).all()
+    return points
+
 
 @router.post("/adresse", response_model=Adresse)
 def create_Adresset(adresse: AdresseCreate, db: Session = Depends(get_db)):
@@ -19,7 +29,7 @@ def create_Adresset(adresse: AdresseCreate, db: Session = Depends(get_db)):
     return db_adresse
 
 @router.get("/adresse/{adresse_id}", response_model=Adresse)
-def get_point_d_interet(adresse_id: int, db: Session = Depends(get_db)):
+def get_adresse(adresse_id: int, db: Session = Depends(get_db)):
     db_adresse = db.query(DBAdresse).get(adresse_id)
     if db_adresse is None:
         raise HTTPException(status_code=404, detail="Adresse not found")
@@ -43,3 +53,11 @@ def delete_adresse(adresse_id: int, db: Session = Depends(get_db)):
     db.delete(db_adresse)
     db.commit()
     return {"message": "Adresse deleted successfully"}
+
+
+
+
+from typing import List
+
+def get_adresses(db: Session) -> List[Adresse]:
+    return db.query(Adresse).all()

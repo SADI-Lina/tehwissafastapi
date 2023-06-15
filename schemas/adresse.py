@@ -13,3 +13,4 @@ class Adresse(AdresseBase):
 
     class Config:
         orm_mode = True   
+

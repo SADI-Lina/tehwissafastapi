@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Time, ForeignKey
 from sqlalchemy.orm import relationship
 from config.db import Base
-
+from .jour_choices import JourChoices
 class HorairesAcces(Base):
     __tablename__ = "horaires_acces"
 
