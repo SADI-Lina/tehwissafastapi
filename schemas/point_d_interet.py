@@ -4,14 +4,15 @@ from pydantic import BaseModel
 class PointDInteretBase(BaseModel):
     description: str
     nom: str
-    Dimanche: str = None
-    Lundi: str = None
-    Mardi: str = None
-    Mercredi: str = None
-    Jeudi: str = None
-    Vendredi: str = None
-    Samedi: str = None 
+    Dimanche: str = ""
+    Lundi: str = ""
+    Mardi: str = ""
+    Mercredi: str = ""
+    Jeudi: str = ""
+    Vendredi: str = ""
+    Samedi: str = ""
     nbr_visites: int
+    moyenne_etoiles: float
     adresse_id: int
     theme_id: int
     categorie_id: int

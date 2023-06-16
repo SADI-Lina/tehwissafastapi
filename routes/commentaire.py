@@ -1,15 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 
 from config.db import get_db
 from schemas.commentaire import CommentaireCreate, Commentaire
 from models.commentaire import Commentaire as DBCommentaire
+from models.point_d_interet import PointDInteret
+from models.point_d_interet import PointDInteret as DBPointDInteret
 
-router = APIRouter()
+
+router = APIRouter(tags=["Commentaire"])
 
 @router.post("/commentaire", response_model=Commentaire)
 def create_commentaire(commentaire: CommentaireCreate, db: Session = Depends(get_db)):
-    
 
     db_commentaire = DBCommentaire(
         id_touriste=commentaire.id_touriste,
@@ -20,4 +23,22 @@ def create_commentaire(commentaire: CommentaireCreate, db: Session = Depends(get
     db.add(db_commentaire)
     db.commit()
     db.refresh(db_commentaire)
+
+    # Mettre à jour la moyenne des nombres d'étoiles du lieu touristique
+    point_d_interet = db_commentaire.point_d_interet
+    average_rating = point_d_interet.calculate_average_rating()
+    point_d_interet.moyenne_etoiles = average_rating
+    db.commit()
+
     return db_commentaire
+
+def get_comments_by_point_id(db: Session, point_id: int) -> List[DBCommentaire]:
+    comments = db.query(DBCommentaire).filter(DBCommentaire.id_point_in == point_id).all()
+    return comments
+
+@router.get("/commentaire/{point_id}", response_model=List[Commentaire])
+def get_commentaires_by_point_id(point_id: int, db: Session = Depends(get_db)):
+    comments = get_comments_by_point_id(db, point_id)
+    if not comments:
+        raise HTTPException(status_code=404, detail="No comments found for the specified point of interest")
+    return comments

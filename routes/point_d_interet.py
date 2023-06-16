@@ -1,12 +1,10 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException , Form
 from sqlalchemy.orm import Session
-
+from sqlalchemy import desc
 from config.db import get_db
 from schemas.point_d_interet import PointDInteretCreate, PointDInteret
 from models.point_d_interet import PointDInteret as DBPointDInteret
-from schemas.horaires_acces import HorairesAccesCreate, HorairesAcces
-from models.horaires_acces import HorairesAcces as DBHorairesAcces
 from routes.adresse import get_adresses
 from models.adresse import Adresse
 from models.categorie import Categorie
@@ -35,6 +33,10 @@ def create_point_d_interet(point: PointDInteretCreate, db: Session = Depends(get
     db.add(db_point)
     db.commit()
     db.refresh(db_point)
+
+    db_point.moyenne_etoiles = 0  # Set the average rating, defaulting to 0 if no ratings exist
+
+    db.commit()
     return db_point
 
 
@@ -84,6 +86,8 @@ def get_point_d_interet(point_id: int, db: Session = Depends(get_db)):
     db_point = db.query(DBPointDInteret).get(point_id)
     if db_point is None:
         raise HTTPException(status_code=404, detail="Point of Interest not found")
+    db_point.nbr_visites += 1  # Increment nbr_visites by 1
+    db.commit()
     return db_point
 
 @router.put("/points_d_interet/{point_id}", response_model=PointDInteret)
@@ -104,3 +108,17 @@ def delete_point_d_interet(point_id: int, db: Session = Depends(get_db)):
     db.delete(db_point)
     db.commit()
     return {"message": "Point of Interest deleted successfully"}
+
+@router.get("/statistics/most_visited", response_model=List[PointDInteret])
+def get_most_visited_points(db: Session = Depends(get_db)):
+    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.nbr_visites)).limit(10).all()
+    return points
+
+@router.get("/statistics/recommendations", response_model=List[PointDInteret])
+def get_recommendations(db: Session = Depends(get_db)):
+    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.moyenne_etoiles)).limit(10).all()
+
+    if not points:
+        raise HTTPException(status_code=404, detail="No recommended points of interest found")
+
+    return points

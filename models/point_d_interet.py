@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey
+from sqlalchemy import Column, Integer, Text, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from config.db import Base
 from .adresse import Adresse
@@ -21,7 +21,21 @@ class PointDInteret(Base):
     adresse_id = Column(Integer, ForeignKey("adresse.id"))
     theme_id = Column(Integer, ForeignKey("theme.id"))
     categorie_id = Column(Integer, ForeignKey("categorie.id"))
+    moyenne_etoiles = Column(Float, default=0)
 
     adresse = relationship("Adresse", backref="points_d_interet")
     theme = relationship("Theme", backref="points_d_interet")
     categorie = relationship("Categorie", backref="points_d_interet")
+
+    def calculate_average_rating(self):
+        total_ratings = 0
+        num_comments = len(self.commentaires)
+
+        if num_comments == 0:
+            return 0  # Pour éviter une division par zéro
+
+        for commentaire in self.commentaires:
+            total_ratings += commentaire.nb_etoile
+
+        average_rating = total_ratings / num_comments
+        return average_rating
