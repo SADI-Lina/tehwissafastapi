@@ -7,9 +7,9 @@ from models.point_d_interet import PointDInteret as DBPointDInteret
 from config.db import get_db
 import os
 
-router = APIRouter(prefix="/images", tags=["Images"])
+router = APIRouter(tags=["Images"])
 
-@router.post("/{point_id}", response_model=Image)
+@router.post("/image/{point_id}", response_model=Image)
 def create_Image(point_id:int ,image: ImageBase, db: Session = Depends(get_db)):
     db_image = DBImage(
         path=image.path,
@@ -29,7 +29,7 @@ def get_image(image_id: int, db: Session = Depends(get_db)):
     return db_image
 
 
-@router.get("/point/{point_id}", response_model=List[Image])
+@router.get("/point_d_interet/{point_id}/image", response_model=List[Image])
 def get_images_by_point(point_id: int, db: Session = Depends(get_db)):
     db_point = db.query(DBPointDInteret).get(point_id)
     if db_point is None:

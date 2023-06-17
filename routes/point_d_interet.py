@@ -100,9 +100,13 @@ def get_point_d_interet(point_id: int, db: Session = Depends(get_db)):
     db_point = db.query(DBPointDInteret).get(point_id)
     if db_point is None:
         raise HTTPException(status_code=404, detail="Point of Interest not found")
+    
     db_point.nbr_visites += 1  # Increment nbr_visites by 1
     db.commit()
     return db_point
+
+
+
 
 @router.put("/points_d_interet/{point_id}", response_model=PointDInteret)
 def update_point_d_interet(point_id: int, point: PointDInteret, db: Session = Depends(get_db)):
@@ -123,10 +127,15 @@ def delete_point_d_interet(point_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Point of Interest deleted successfully"}
 
+
+
+
 @router.get("/statistics/most_visited", response_model=List[PointDInteret])
 def get_most_visited_points(db: Session = Depends(get_db)):
     points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.nbr_visites)).limit(6).all()
     return points
+
+
 
 @router.get("/statistics/recommendations", response_model=List[PointDInteret])
 def get_recommendations(db: Session = Depends(get_db)):

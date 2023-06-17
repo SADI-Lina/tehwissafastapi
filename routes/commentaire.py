@@ -47,7 +47,7 @@ def get_comments_by_point_id(db: Session, point_id: int) -> List[DBCommentaire]:
     comments = db.query(DBCommentaire).filter(DBCommentaire.id_point_in == point_id).all()
     return comments
 
-@router.get("/commentaire/{point_id}", response_model=List[Commentaire])
+@router.get("/point_d_interet/{point_id}/commentaire", response_model=List[Commentaire])
 def get_commentaires_by_point_id(point_id: int, db: Session = Depends(get_db)):
     comments = get_comments_by_point_id(db, point_id)
     if not comments:
