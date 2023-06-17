@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class EvenementBase(BaseModel):
     nom: str
+    description : str
     type_event_id: int
     id_wilaya: int
 

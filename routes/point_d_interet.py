@@ -27,22 +27,26 @@ router = APIRouter(tags=["PointDInterets"])
 
 @router.post("/points_d_interet", response_model=PointDInteret)
 def create_point_d_interet(point: PointDInteretCreate, db: Session = Depends(get_db)):
+    # Check if theme_id and adresse_id are provided and assign valid values if necessary
+    theme_id = point.theme_id if point.theme_id is not None else 0  # Assuming 0 as a default theme_id
+    adresse_id = point.adresse_id if point.adresse_id is not None else 0  # Assuming 0 as a default adresse_id
+
     db_point = DBPointDInteret(
         description=point.description,
         nom=point.nom,
-        Dimanche = point.Dimanche,
-        Lundi = point.Lundi,
-        Mardi = point.Mardi,
-        Mercredi = point.Mercredi,
-        Jeudi = point.Jeudi,
-        Vendredi = point.Vendredi,
-        Samedi = point.Samedi, 
+        Dimanche=point.Dimanche,
+        Lundi=point.Lundi,
+        Mardi=point.Mardi,
+        Mercredi=point.Mercredi,
+        Jeudi=point.Jeudi,
+        Vendredi=point.Vendredi,
+        Samedi=point.Samedi,
         nbr_visites=point.nbr_visites,
-        adresse_id=point.adresse_id,
-        theme_id=point.theme_id,
+        adresse_id=adresse_id,
+        theme_id=theme_id,
         categorie_id=point.categorie_id,
-        lng = point.lng,
-        lat = point.lat
+        lng=point.lng,
+        lat=point.lat
     )
     db.add(db_point)
     db.commit()
@@ -150,3 +154,4 @@ def get_recommendations(db: Session = Depends(get_db)):
 def get_point_d_interet_count(db: Session = Depends(get_db)):
     count = db.query(func.count(DBPointDInteret.id)).scalar()
     return count
+
