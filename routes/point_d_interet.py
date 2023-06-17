@@ -125,12 +125,12 @@ def delete_point_d_interet(point_id: int, db: Session = Depends(get_db)):
 
 @router.get("/statistics/most_visited", response_model=List[PointDInteret])
 def get_most_visited_points(db: Session = Depends(get_db)):
-    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.nbr_visites)).limit(10).all()
+    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.nbr_visites)).limit(6).all()
     return points
 
 @router.get("/statistics/recommendations", response_model=List[PointDInteret])
 def get_recommendations(db: Session = Depends(get_db)):
-    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.moyenne_etoiles)).limit(10).all()
+    points = db.query(DBPointDInteret).order_by(desc(DBPointDInteret.moyenne_etoiles)).limit(6).all()
 
     if not points:
         raise HTTPException(status_code=404, detail="No recommended points of interest found")
