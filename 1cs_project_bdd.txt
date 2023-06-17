@@ -1,0 +1,874 @@
+#drop table temp_nom;
+#drop table temp_prenom;
+drop database tehwissa;
+CREATE database tehwissa;
+USE tehwissa;
+
+
+CREATE TABLE region (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    designation TEXT
+);
+
+CREATE TABLE wilaya (
+    code INT PRIMARY KEY,
+    designation TEXT,
+    region_id INT,
+    FOREIGN KEY (region_id) REFERENCES region(id)
+);
+CREATE TABLE adresse (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    wilaya_id INT,
+    info_supp TEXT,
+    FOREIGN KEY (wilaya_id) REFERENCES wilaya (code)
+);
+
+CREATE TABLE theme (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    designation TEXT
+);
+
+CREATE TABLE categorie (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    designation TEXT
+);
+
+CREATE TABLE jour_choices (
+    id INT PRIMARY KEY,
+    label VARCHAR(50)
+);
+
+-- USERS
+CREATE TABLE tourist_user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ntelephone BIGINT,
+    adresse_id INT,
+    username VARCHAR(150),
+    password VARCHAR(128),
+    nom VARCHAR(30),
+    prenom VARCHAR(150),
+    email VARCHAR(254),
+    FOREIGN KEY (adresse_id) REFERENCES adresse (id)
+);
+
+CREATE TABLE regional_user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ntelephone BIGINT,
+    region_id INT,
+    username VARCHAR(150),
+    password VARCHAR(128),
+    nom VARCHAR(30),
+    prenom VARCHAR(150),
+    email VARCHAR(254),
+    FOREIGN KEY (region_id) REFERENCES region (id)
+);
+
+
+--
+
+
+CREATE TABLE type_event (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    designation TEXT
+);
+
+
+CREATE TABLE evenement (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom TEXT,
+    type_event_id INT,
+    id_wilaya INT,
+    FOREIGN KEY (id_wilaya) REFERENCES wilaya (code)
+);
+
+ 
+ 
+CREATE TABLE point_d_interet (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description TEXT,
+    nom TEXT,
+    Dimanche TEXT,
+	Lundi TEXT,
+    Mardi TEXT,
+    Mercredi TEXT,
+    Jeudi TEXT,
+    Vendredi TEXT,
+    Samedi TEXT, 
+    nbr_visites INT DEFAULT 0,
+    moyenne_etoiles FLOAT DEFAULT 0,
+    adresse_id INT,
+    theme_id INT,
+    categorie_id INT,
+    lng FLOAT,
+    lat FLOAT,
+    FOREIGN KEY (adresse_id) REFERENCES adresse (id),
+    FOREIGN KEY (theme_id) REFERENCES theme (id),
+    FOREIGN KEY (categorie_id) REFERENCES categorie (id)
+);
+
+
+
+CREATE TABLE commentaire (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_touriste INT,
+    contenu TEXT,
+    nb_etoile INT,
+    id_point_in INT,
+    FOREIGN KEY (id_touriste) REFERENCES tourist_user (id),
+    FOREIGN KEY (id_point_in) REFERENCES point_d_interet (id)
+);
+
+
+CREATE TABLE moyen_transport (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_point_d_interet INT,
+    designation TEXT,
+    FOREIGN KEY (id_point_d_interet) REFERENCES point_d_interet (id)
+);
+
+CREATE TABLE image (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  path VARCHAR(255),
+  point_id INT,
+  FOREIGN KEY (point_id) REFERENCES point_d_interet (id)
+);
+
+CREATE TABLE image_event (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  path VARCHAR(255),
+  event_id INT,
+  FOREIGN KEY (event_id) REFERENCES evenement (id)
+);
+
+
+
+-- Ajout des régions
+INSERT INTO region (designation) VALUES ('Nord');
+INSERT INTO region (designation) VALUES ('Sud');
+INSERT INTO region (designation) VALUES ('Ouest');
+INSERT INTO region (designation) VALUES ('Est');
+
+SELECT * FROM region;
+
+-- Ajout des wilayas avec leur région correspondante
+INSERT INTO wilaya (code, designation, region_id) VALUES (1, 'Adrar', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (2, 'Chlef', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (3, 'Laghouat', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (4, 'Oum El Bouaghi', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (5, 'Batna', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (6, 'Béjaïa', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (7, 'Biskra', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (8, 'Béchar', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (9, 'Blida', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (10, 'Bouira', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (11, 'Tamanrasset', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (12, 'Tébessa', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (13, 'Tlemcen', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (14, 'Tiaret', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (15, 'Tizi Ouzou', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (16, 'Alger', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (17, 'Djelfa', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (18, 'Jijel', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (19, 'Sétif', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (20, 'Saïda', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (21, 'Skikda', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (22, 'Sidi Bel Abbès', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (23, 'Annaba', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (24, 'Guelma', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (25, 'Constantine', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (26, 'Médéa', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (27, 'Mostaganem', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (28, 'M''Sila', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (29, 'Mascara', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (30, 'Ouargla', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (31, 'Oran', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (32, 'El Bayadh', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (33, 'Illizi', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (34, 'Bordj Bou Arréridj', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (35, 'Boumerdès', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (36, 'El Tarf', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (37, 'Tindouf', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (38, 'Tissemsilt', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (39, 'El Oued', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (40, 'Khenchela', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (41, 'Souk Ahras', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (42, 'Tipaza', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (43, 'Mila', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (44, 'Aïn Defla', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (45, 'Naâma', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (46, 'Aïn Témouchent', 1);
+INSERT INTO wilaya (code, designation, region_id) VALUES (47, 'Ghardaïa', 2);
+INSERT INTO wilaya (code, designation, region_id) VALUES (48, 'Relizane', 1);
+
+SELECT * FROM wilaya;
+
+-- Ajout des adresses
+INSERT INTO adresse (wilaya_id, info_supp)
+SELECT w.code, CONCAT('Commune ', n.num, ' ',
+    CASE FLOOR(RAND() * 5)
+        WHEN 0 THEN 'Villa'
+        WHEN 1 THEN 'Maison'
+        WHEN 2 THEN 'Duplex'
+        WHEN 3 THEN 'Chalet'
+        WHEN 4 THEN 'Ferme'
+    END
+) AS info_supp
+FROM wilaya w
+JOIN (
+    SELECT 1 AS num UNION ALL
+    SELECT 2 AS num
+) AS n
+CROSS JOIN (
+    SELECT 1 AS dummy UNION ALL
+    SELECT 2 AS dummy
+) AS d
+ORDER BY w.code, RAND();
+
+
+SELECT * FROM adresse
+order by wilaya_id;
+
+select * from adresse;
+
+-- Ajouter des thèmes
+INSERT INTO theme (designation) VALUES ('Histoire');
+INSERT INTO theme (designation) VALUES ('Nature');
+INSERT INTO theme (designation) VALUES ('Culture');
+INSERT INTO theme (designation) VALUES ('Aventure');
+INSERT INTO theme (designation) VALUES ('Cuisine régionale');
+
+SELECT * FROM theme;
+
+-- Ajouter des catégories
+INSERT INTO categorie (designation) VALUES ('Monuments');
+INSERT INTO categorie (designation) VALUES ('Musées');
+INSERT INTO categorie (designation) VALUES ('Places');
+INSERT INTO categorie (designation) VALUES ('Parcs');
+INSERT INTO categorie (designation) VALUES ('Restaurants');
+INSERT INTO categorie (designation) VALUES ('Hotels');
+INSERT INTO categorie (designation) VALUES ('CentreCommerciale');
+
+
+SELECT * FROM categorie;
+
+-- Ajouter les jours de la semaine
+
+INSERT INTO jour_choices (id, label) VALUES (1, 'Dimanche');
+INSERT INTO jour_choices (id, label) VALUES (2, 'Lundi');
+INSERT INTO jour_choices (id, label) VALUES (3, 'Mardi');
+INSERT INTO jour_choices (id, label) VALUES (4, 'Mercredi');
+INSERT INTO jour_choices (id, label) VALUES (5, 'Jeudi');
+INSERT INTO jour_choices (id, label) VALUES (6, 'Vendredi');
+INSERT INTO jour_choices (id, label) VALUES (7, 'Samedi');
+
+SELECT * FROM jour_choices;
+
+-- Ajout des touristes
+
+-- Générer des noms aléatoires
+CREATE TEMPORARY TABLE temp_nom (id INT PRIMARY KEY AUTO_INCREMENT, nom VARCHAR(50));
+INSERT INTO temp_nom (nom)
+VALUES ('Saidi'), ('Slimani'), ('Touati'), ('Mansouri'), ('Brahimi'), ('Messaoudi'), ('Haddad'), ('Yahiaoui'), ('Rahmani'), ('Dahmani'), ('Sahraoui'), ('Benaissa'), ('Moussaoui'), ('Salhi'), ('Bouziane'), ('Saadi'), ('Aissaoui'), ('Benyahia'), ('Belhadj'), ('Amara');
+
+-- Générer des prénoms aléatoires
+CREATE TEMPORARY TABLE temp_prenom (id INT PRIMARY KEY AUTO_INCREMENT, prenom VARCHAR(50));
+INSERT INTO temp_prenom (prenom)
+VALUES ('YASMINE'), ('MOHAMED'), ('AMINA'), ('AMINE'), ('SARAH'), ('KARIM'), ('IMÈNE'), ('YACINE'), ('INÈS'), ('ALI'), ('MERIEM'), ('AHMED'), ('LINA'), ('MEHDI'), ('MANEL'), ('LYES'), ('SOFIA'), ('NAZIM'), ('AMEL'), ('WALID'), ('SABRINA'), ('DJAMEL'), ('AMIRA'), ('HAKIM'), ('MINA'), ('OMAR'), ('AYA'), ('KAMEL'), ('MARIA'), ('SAMIR'), ('LYNDA'), ('NASSIM');
+
+-- Générer 50 touristes aléatoires
+-- Générer 50 touristes aléatoires
+INSERT INTO tourist_user (ntelephone, adresse_id, username, password, nom, prenom, email)
+SELECT
+    FLOOR(RAND() * 900000000) + 1000000000 AS ntelephone,
+    FLOOR(1 + FLOOR(RAND()) * (SELECT MAX(id) FROM adresse)) AS adresse_id,
+    CONCAT(temp_nom.nom, CAST(FLOOR(RAND() * 100) AS UNSIGNED)) AS username,
+    MD5(RAND()) AS password,
+    temp_nom.nom AS nom,
+    temp_prenom.prenom AS prenom,
+    CONCAT(temp_nom.nom, temp_prenom.prenom, '@gmail.com') AS email
+FROM
+    (SELECT nom, RAND() AS rand_num FROM temp_nom ORDER BY rand_num LIMIT 50) AS temp_nom
+JOIN
+    (SELECT prenom, RAND() AS rand_num FROM temp_prenom ORDER BY rand_num LIMIT 50) AS temp_prenom
+ON
+    1 = 1;
+
+SELECT * FROM tourist_user;
+-- Generate 10 employés du ministère au niveau des régions
+INSERT INTO regional_user (ntelephone, region_id, username, password, nom, prenom, email)
+SELECT
+    FLOOR(RAND() * 900000000) + 1000000000 AS ntelephone,
+    FLOOR(1 + RAND() * (SELECT MAX(id) FROM region)) AS region_id,
+    CONCAT(temp_nom.nom, CAST(FLOOR(RAND() * 100) AS UNSIGNED)) AS username,
+    '123456789' AS password,
+    temp_nom.nom AS nom,
+    temp_prenom.prenom AS prenom,
+    CONCAT(temp_nom.nom, temp_prenom.prenom, '@gmail.com') AS email
+FROM
+    (SELECT nom, RAND() AS rand_num FROM temp_nom ORDER BY rand_num LIMIT 10) AS temp_nom
+JOIN
+    (SELECT prenom, RAND() AS rand_num FROM temp_prenom ORDER BY rand_num LIMIT 10) AS temp_prenom
+ON
+    1 = 1;
+
+SELECT * FROM regional_user;
+
+-- Ajout des points d'interets
+
+-- Insert the tourist locations for Alger
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('La célèbre Casbah d''Alger.', 'Casbah d''Alger', 0, (SELECT id FROM adresse WHERE wilaya_id = 16 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Une magnifique basilique à Alger.', 'Basilique Notre-Dame d''Afrique', 0, (SELECT id FROM adresse WHERE wilaya_id = 16 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Un jardin botanique à Alger.', 'Jardin d''Essai du Hamma', 0, (SELECT id FROM adresse WHERE wilaya_id = 16 LIMIT 1), 2, 3, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+-- Insert the tourist locations for Tlemcen
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('Le magnifique parc national de Tlemcen.', 'Parc national de Tlemcen', 0, (SELECT id FROM adresse WHERE wilaya_id = 13 LIMIT 1), 2, 2, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('La célèbre mosquée de Tlemcen.', 'Mosquée Sidi Boumediene', 0, (SELECT id FROM adresse WHERE wilaya_id = 13 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Une magnifique plage à Tlemcen.', 'Plage Les Andalouses', 0, (SELECT id FROM adresse WHERE wilaya_id = 13 LIMIT 1), 3, 4, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+-- Insert the tourist locations for Oran
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('Une place emblématique à Oran.', 'Place du 1er Novembre', 0, (SELECT id FROM adresse WHERE wilaya_id = 31 LIMIT 1), 1, 3, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Un fort historique à Oran.', 'Fort Santa Cruz', 0, (SELECT id FROM adresse WHERE wilaya_id = 31 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Un théâtre célèbre à Oran.', 'Le Théâtre d''Oran', 0, (SELECT id FROM adresse WHERE wilaya_id = 31 LIMIT 1), 3, 2, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+-- Insert the tourist locations for Constantine
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('Un pont emblématique de Constantine.', 'Pont Sidi M''Cid', 0, (SELECT id FROM adresse WHERE wilaya_id = 25 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Un palais historique à Constantine.', 'Palais du Bey', 0, (SELECT id FROM adresse WHERE wilaya_id = 25 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('La Casbah de Constantine.', 'La Casbah de Constantine', 0, (SELECT id FROM adresse WHERE wilaya_id = 25 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+-- Insert the tourist locations for Tipaza
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('Les ruines romaines de Tipaza.', 'Ruines de Tipaza', 0, (SELECT id FROM adresse WHERE wilaya_id = 42 LIMIT 1), 1, 1, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('Une belle plage à Tipaza.', 'Plage Chenoua', 0, (SELECT id FROM adresse WHERE wilaya_id = 42 LIMIT 1), 3, 4, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+-- Insert the tourist locations for Bejaia
+INSERT INTO point_d_interet (description, nom, nbr_visites, adresse_id, theme_id, categorie_id, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi)
+VALUES
+    ('La célèbre Gouraya.', 'Parc National de Gouraya', 0, (SELECT id FROM adresse WHERE wilaya_id = 6 LIMIT 1), 2, 2, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h'),
+    ('La magnifique plage de Bejaia.', 'Plage Cap Sigli', 0, (SELECT id FROM adresse WHERE wilaya_id = 6 LIMIT 1), 3, 4, 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h', 'de 8:00h jusqu''à 18:00h');
+
+
+SELECT * FROM point_d_interet;
+
+-- Ajout de commentaires
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'C''est un bon lieu à visiter, je le recommande vivement.', 5, 1),
+    (2, 'J''ai adoré cet endroit, c''est vraiment magnifique.', 4, 1),
+    (3, 'Une expérience incroyable, je ne peux que le recommander.', 5, 2),
+    (4, 'L''un des meilleurs endroits que j''ai visités, à ne pas manquer.', 5, 3),
+    (5, 'C''est un lieu incontournable pour les amateurs d''histoire.', 4, 4),
+    (6, 'J''ai été émerveillé par la beauté de cet endroit.', 5, 5),
+    (7, 'Une destination idéale pour se détendre et se ressourcer.', 4, 6),
+    (8, 'Je recommande vivement de visiter ce lieu lors de votre séjour.', 5, 7),
+    (9, 'Un lieu chargé d''histoire et de culture, à découvrir absolument.', 5, 8),
+    (10, 'J''ai passé un moment incroyable, je reviendrai certainement.', 4, 9),
+    (11, 'C''est un endroit magique, parfait pour les amateurs de nature.', 5, 10),
+    (12, 'Une vue à couper le souffle, je suis tombé amoureux de cet endroit.', 5, 11),
+    (13, 'Un lieu emblématique qui représente parfaitement la culture locale.', 4, 12),
+    (14, 'J''ai été impressionné par l''architecture et l''histoire de ce lieu.', 5, 13),
+    (15, 'Un véritable trésor caché, j''ai été agréablement surpris.', 4, 14),
+    (16, 'Je recommande cette destination à tous les voyageurs passionnés.', 5, 15),
+    (17, 'C''est un lieu idéal pour les amateurs de sports nautiques.', 5, 3),
+    (18, 'Un endroit paisible et relaxant, parfait pour se ressourcer.', 4, 11),
+    (19, 'J''ai été captivé par l''ambiance chaleureuse de cet endroit.', 5, 10),
+    (20, 'Une expérience unique que je recommande à tous les voyageurs.', 5, 8);
+ 
+SELECT * FROM commentaire;
+
+-- Ajout de type d'evenements
+INSERT INTO type_event (designation)
+VALUES
+    ('Visites guidées'),
+    ('Expositions'),
+    ('Spectacles'),
+    ('Festivals et événements culturels'),
+    ('Conférences et colloques'),
+    ('Activités éducatives'),
+    ('Événements sportifs'),
+    ('Célébrations spéciales');
+
+SELECT * FROM type_event;    
+
+-- Ajout des évenements
+
+INSERT INTO evenement (nom, type_event_id, id_wilaya)
+VALUES
+    ('Événement 1', 1, 1),
+    ('Événement 2', 2, 2),
+    ('Événement 3', 3, 3),
+    ('Événement 4', 4, 4),
+    ('Événement 5', 5, 5),
+    ('Événement 6', 1, 2),
+    ('Événement 7', 2, 3),
+    ('Événement 8', 3, 4),
+    ('Événement 9', 4, 5),
+    ('Événement 10', 5, 1),
+    ('Événement 11', 1, 3),
+    ('Événement 12', 2, 4),
+    ('Événement 13', 3, 5),
+    ('Événement 14', 4, 1),
+    ('Événement 15', 5, 2),
+    ('Événement 16', 1, 4),
+    ('Événement 17', 2, 5),
+    ('Événement 18', 3, 1),
+    ('Événement 19', 4, 2),
+    ('Événement 20', 5, 3);
+
+SELECT * FROM evenement;
+
+-- Ajouter des moyens de transport
+INSERT INTO moyen_transport (id_point_d_interet, designation)
+SELECT
+    id,
+    CONCAT(
+        CASE
+            WHEN MOD(id, 6) = 0 THEN 'bus '
+            WHEN MOD(id, 6) = 1 THEN 'train '
+            WHEN MOD(id, 6) = 2 THEN 'tramway '
+            WHEN MOD(id, 6) = 3 THEN 'taxi '
+            WHEN MOD(id, 6) = 4 THEN 'metro '
+            WHEN MOD(id, 6) = 5 THEN 'telepherique '
+        END,
+        FLOOR(RAND() * 100) + 1
+    )
+FROM point_d_interet
+LIMIT 100;
+
+SELECT * FROM moyen_transport;
+
+select * from point_d_interet;
+
+
+-- Ajout d'images
+INSERT INTO image (path, point_id)
+VALUES
+  -- Point d'interet with ID 1
+  ('images/1_1.jpg', 1),
+  ('images/1_2.jpeg', 1),
+  ('images/1_3.jpg', 1),
+  ('images/1_4.jpg', 1),
+
+  -- Point d'interet with ID 2
+  ('images/2_1.jpg', 2),
+  ('images/2_2.jpg', 2),
+  ('images/2_3.jpg', 2),
+
+  -- Point d'interet with ID 3
+  ('images/3_1.jpeg', 3),
+  ('images/3_2.jpeg', 3),
+  ('images/3_3.jpeg', 3),
+  ('images/3_4.jpeg', 3),
+  ('images/3_5.jpeg', 3),
+
+  -- Point d'interet with ID 4
+  ('images/4_1.jpg', 4),
+  ('images/4_2.jpeg', 4),
+  ('images/4_3.jpeg', 4),
+  ('images/4_4.jpeg', 4),
+
+  -- Point d'interet with ID 5
+  ('images/5_1.jpeg', 5),
+  ('images/5_2.jpeg', 5),
+  ('images/5_3.jpeg', 5),
+  ('images/5_4.jpeg', 5),
+  ('images/5_5.jpeg', 5),
+  ('images/5_6.jpeg', 5),
+
+  -- Point d'interet with ID 6
+  ('images/6_1.jpeg', 6),
+  ('images/6_2.jpeg', 6),
+  ('images/6_3.jpeg', 6),
+  ('images/6_4.jpeg', 6),
+
+  -- Point d'interet with ID 7
+  ('images/7_1.jpeg', 7),
+  ('images/7_2.jpeg', 7),
+  ('images/7_3.jpeg', 7),
+  ('images/7_4.jpeg', 7),
+
+  -- Point d'interet with ID 8
+  ('images/8_1.jpeg', 8),
+  ('images/8_2.jpeg', 8),
+  ('images/8_3.jpeg', 8),
+  ('images/8_4.jpeg', 8),
+  ('images/8_5.jpeg', 8),
+
+  -- Point d'interet with ID 9
+  ('images/9_1.jpeg', 9),
+  ('images/9_2.jpeg', 9),
+  ('images/9_3.jpeg', 9),
+  ('images/9_4.jpeg', 9),
+  ('images/9_5.jpeg', 9),
+
+  -- Point d'interet with ID 10
+  ('images/10_1.jpeg', 10),
+  ('images/10_2.jpeg', 10),
+  ('images/10_3.jpg', 10),
+
+  -- Point d'interet with ID 11
+  ('images/11_1.jpeg', 11),
+  ('images/11_2.jpeg', 11),
+  ('images/11_3.jpeg', 11),
+  ('images/11_4.jpeg', 11),
+
+  -- Point d'interet with ID 12
+  ('images/12_1.jpeg', 12),
+  ('images/12_2.jpeg',12),
+  ('images/12_3.jpeg',12),
+  ('images/12_4.jpeg',12),
+  
+  -- Point d'interet with ID 13
+  ('images/13_1.jpeg', 13),
+  ('images/13_2.jpeg', 13),
+  ('images/13_3.jpeg', 13),
+  ('images/13_4.jpeg', 13),
+
+  -- Point d'interet with ID 14
+  ('images/14_1.jpeg', 14),
+  ('images/14_2.jpeg', 14),
+
+  -- Point d'interet with ID 15
+  ('images/15_1.jpeg', 15),
+  ('images/15_2.jpeg', 15),
+  ('images/15_3.jpeg', 15),
+  ('images/15_4.jpeg', 15),
+
+  -- Point d'interet with ID 16
+  ('images/16_1.jpg', 16),
+  ('images/16_2.jpg', 16);
+
+select * from image;
+
+-- Ajout commentaires
+
+-- Commentaires pour la Casbah d'Alger (point d'intérêt ID 1)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un lieu historique fascinant avec une vue panoramique sur Alger.', 5, 1),
+    (2, 'J''ai adoré me perdre dans les ruelles de la Casbah.', 4, 1),
+    (3, 'Une expérience culturelle unique à ne pas manquer.', 5, 1);
+
+-- Commentaires pour la Basilique Notre-Dame d'Afrique (point d'intérêt ID 2)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une basilique impressionnante avec une vue magnifique sur la mer.', 5, 2),
+    (2, 'J''ai été émerveillé par l''architecture de la Basilique.', 4, 2),
+    (3, 'Un lieu de recueillement et de beauté.', 5, 2);
+
+-- Commentaires pour le Jardin d'Essai du Hamma (point d'intérêt ID 3)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un endroit paisible pour se promener et admirer la nature.', 5, 3),
+    (2, 'J''ai passé un après-midi relaxant dans le jardin.', 4, 3),
+    (3, 'Une grande variété de plantes et de fleurs à découvrir.', 5, 3);
+
+-- Commentaires pour le Parc national de Tlemcen (point d'intérêt ID 4)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un parc naturel magnifique avec une faune et une flore exceptionnelles.', 5, 4),
+    (2, 'J''ai fait de belles randonnées dans le parc.', 4, 4),
+    (3, 'Un lieu idéal pour se ressourcer en pleine nature.', 5, 4);
+
+-- Commentaires pour la Mosquée Sidi Boumediene (point d'intérêt ID 5)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une mosquée magnifique et emblématique de Tlemcen.', 5, 5),
+    (2, 'La Mosquée Sidi Boumediene est un joyau architectural.', 4, 5),
+    (3, 'Un lieu de spiritualité et de sérénité.', 5, 5);
+
+-- Commentaires pour la Plage Les Andalouses (point d'intérêt ID 6)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une plage paradisiaque avec des eaux cristallines.', 4, 6),
+    (2, 'J''ai passé une journée relaxante sur la Plage Les Andalouses.', 4, 6),
+    (3, 'Un endroit idéal pour se baigner et se détendre.', 5, 6);
+
+-- Commentaires pour la Place du 1er Novembre (point d'intérêt ID 7)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une place animée au cœur d''Oran.', 5, 7),
+    (2, 'J''ai apprécié l''ambiance et les cafés de la Place du 1er Novembre.', 4, 7),
+    (3, 'Un lieu de rencontre et de convivialité.', 5, 7);
+
+-- Commentaires pour le Fort Santa Cruz (point d'intérêt ID 8)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un fort historique avec une vue imprenable sur Oran.', 5, 8),
+    (2, 'J''ai été captivé par l''histoire du Fort Santa Cruz.', 4, 8),
+    (3, 'Un lieu chargé d''histoire et de charme.', 5, 8);
+
+-- Commentaires pour le Théâtre d'Oran (point d'intérêt ID 9)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un théâtre prestigieux avec une programmation de qualité.', 5, 9),
+    (2, 'J''ai assisté à une représentation inoubliable au Théâtre d''Oran.', 4, 9),
+    (3, 'Un lieu culturel incontournable à Oran.', 5, 9);
+
+-- Commentaires pour le Pont Sidi M'Cid (point d'intérêt ID 10)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un pont emblématique offrant une vue panoramique sur Constantine.', 5, 10),
+    (2, 'J''ai traversé le Pont Sidi M''Cid et j''ai été émerveillé par la vue.', 4, 10),
+    (3, 'Un ouvrage d''art à ne pas manquer.', 5, 10);
+
+-- Commentaires pour le Palais du Bey (point d'intérêt ID 11)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un palais magnifique avec une riche histoire.', 5, 11),
+    (2, 'J''ai été impressionné par l''architecture du Palais du Bey.', 4, 11),
+    (3, 'Un lieu chargé d''histoire et de splendeur.', 5, 11);
+
+-- Commentaires pour la Casbah de Constantine (point d'intérêt ID 12)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une Casbah pittoresque avec une vue imprenable sur Constantine.', 5, 12),
+    (2, 'J''ai adoré me promener dans les ruelles de la Casbah.', 4, 12),
+    (3, 'Un véritable joyau architectural et culturel.', 5, 12);
+
+-- Commentaires pour les Ruines de Tipaza (point d'intérêt ID 13)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Des ruines romaines fascinantes chargées d''histoire.', 5, 13),
+    (2, 'J''ai été transporté dans l''Antiquité en visitant les Ruines de Tipaza.', 4, 13),
+    (3, 'Un site archéologique remarquable à découvrir.', 5, 13);
+
+-- Commentaires pour la Plage Chenoua (point d'intérêt ID 14)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une plage magnifique avec des paysages à couper le souffle.', 4, 14),
+    (2, 'J''ai passé une journée de détente sur la Plage Chenoua.', 4, 14),
+    (3, 'Un endroit idéal pour se ressourcer au bord de la mer.', 5, 14);
+
+-- Commentaires pour le Parc National de Gouraya (point d'intérêt ID 15)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Un parc national avec une vue panoramique sur la mer.', 5, 15),
+    (2, 'J''ai fait de belles randonnées dans le Parc National de Gouraya.', 4, 15),
+    (3, 'Un lieu préservé où la nature règne en maître.', 5, 15);
+
+-- Commentaires pour la Plage Cap Sigli (point d'intérêt ID 16)
+INSERT INTO commentaire (id_touriste, contenu, nb_etoile, id_point_in)
+VALUES
+    (1, 'Une plage paradisiaque avec du sable fin et une eau turquoise.', 4, 16),
+    (2, 'J''ai passé des moments inoubliables sur la Plage Cap Sigli.', 4, 16),
+    (3, 'Un endroit idéal pour se détendre et profiter du soleil.', 5, 16);
+
+
+select * from commentaire;
+
+
+-- Update the records for the Casbah d'Alger
+UPDATE point_d_interet
+SET lng = 2.3616, lat = 36.7511
+WHERE id = 1 ;
+
+-- Update the records for the Basilique Notre-Dame d'Afrique
+UPDATE point_d_interet
+SET lng = 3.1061, lat = 36.7825
+WHERE id = 2;
+
+-- Update the records for the Parc national de Tlemcen
+UPDATE point_d_interet
+SET lng = -1.3005, lat = 34.8998
+WHERE id = 3;
+
+-- Update the records for the Mosquée Sidi Boumediene
+UPDATE point_d_interet
+SET lng = 4.3870, lat = 36.7293
+WHERE id = 4;
+
+-- Update the records for the Jardin d'Essai du Hamma
+UPDATE point_d_interet
+SET lng = 3.0579, lat = 36.7431
+WHERE id = 5;
+
+-- Update the records for the Place du 1er Novembre
+UPDATE point_d_interet
+SET lng = 3.0823, lat = 36.7525
+WHERE id = 6;
+
+-- Update the records for the Fort Santa Cruz
+UPDATE point_d_interet
+SET lng = 0.6097, lat = 35.2022
+WHERE id = 7;
+
+-- Update the records for the Le Théâtre d'Oran
+UPDATE point_d_interet
+SET lng = -0.6308, lat = 35.6999
+WHERE id = 8;
+
+-- Update the records for the Pont Sidi M'Cid
+UPDATE point_d_interet
+SET lng = 6.6463, lat = 36.3503
+WHERE id = 9;
+
+-- Update the records for the Palais du Bey
+UPDATE point_d_interet
+SET lng = 0.6357, lat = 35.6976
+WHERE id = 10;
+
+-- Update the records for the La Casbah de Constantine
+UPDATE point_d_interet
+SET lng = 6.6109, lat = 36.3602
+WHERE id = 11;
+
+-- Update the records for the Ruines de Tipaza
+UPDATE point_d_interet
+SET lng = 2.4194, lat = 36.5605
+WHERE id = 12;
+
+-- Update the records for the Plage Chenoua
+UPDATE point_d_interet
+SET lng = 2.2324, lat = 36.6825
+WHERE id = 13;
+
+-- Update the records for the Parc National de Gouraya
+UPDATE point_d_interet
+SET lng = 2.2531, lat = 36.8326
+WHERE id = 14;
+
+-- Update the records for the Plage Cap Sigli
+UPDATE point_d_interet
+SET lng = 1.9343, lat = 36.8801
+WHERE id = 15;
+-- Update the records for the Plage Les Andalouses
+UPDATE point_d_interet
+SET lng = 2.9343, lat = 25.8801
+WHERE id = 16;
+
+select * from point_d_interet;
+
+
+
+
+-- Insérer des points d'intérêt de catégorie "Restaurant"
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 1', 'Restaurant 1', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 12.345, 67.890);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 2', 'Restaurant 2', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 34.567, 89.012);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 3', 'Restaurant 3', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 56.789, 12.345);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 4', 'Restaurant 4', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 78.901, 34.567);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 5', 'Restaurant 5', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 90.123, 56.789);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du restaurant 6', 'Restaurant 6', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 5, 12.345, 67.890);
+
+
+-- Insérer des points d'intérêt de catégorie "Centre commercial"
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 1', 'Centre commercial 1', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 23.456, 78.901);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 2', 'Centre commercial 2', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 45.678, 90.123);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 3', 'Centre commercial 3', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 56.789, 12.345);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 4', 'Centre commercial 4', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 78.901, 34.567);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 5', 'Centre commercial 5', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 90.123, 56.789);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description du centre commercial 6', 'Centre commercial 6', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 7, 12.345, 67.890);
+
+
+-- Insérer des points d'intérêt de catégorie "Hôtel"
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 1', 'Hôtel 1', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 34.567, 89.012);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 2', 'Hôtel 2', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 56.789, 12.345);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 3', 'Hôtel 3', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 78.901, 34.567);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 4', 'Hôtel 4', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 90.123, 56.789);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 5', 'Hôtel 5', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 12.345, 67.890);
+
+INSERT INTO point_d_interet (description, nom, Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, categorie_id, lng, lat)
+VALUES ('Description de l''hôtel 6', 'Hôtel 6', 'Horaires Dimanche', 'Horaires Lundi', 'Horaires Mardi', 'Horaires Mercredi', 'Horaires Jeudi', 'Horaires Vendredi', 'Horaires Samedi', 6, 34.567, 89.012);
+
+
+
+select * from point_d_interet;
+
+
+-- Insert restaurant images
+INSERT INTO image (path, point_id)
+SELECT CONCAT('/images/restaurant_', id - 16, '.jpg'), id
+FROM point_d_interet
+WHERE id BETWEEN 17 AND 22;
+
+-- Insert shopping center images
+INSERT INTO image (path, point_id)
+SELECT CONCAT('/images/centre_', id - 22, '.jpg'), id
+FROM point_d_interet
+WHERE id BETWEEN 23 AND 28;
+
+-- Insert hotel images
+INSERT INTO image (path, point_id)
+SELECT CONCAT('/images/hotel_', id - 28, '.jpg'), id
+FROM point_d_interet
+WHERE id BETWEEN 29 AND 34;
+
+select * from image;
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 1);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 2);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 3);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 4);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 5);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 6);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 7);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 8);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 9);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 10);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 11);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 12);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 13);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 14);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 15);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 16);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 17);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 18);
+
+INSERT INTO image_event (path, event_id) VALUES ('/images/event1.jpg', 19);
+INSERT INTO image_event (path, event_id) VALUES ('/images/event2.jpg', 20);
+
+select * from image_event;
+
+
+ALTER TABLE evenement
+ADD description TEXT;
+
+UPDATE evenement
+SET description = "evenement evenement evenment description descrption";
