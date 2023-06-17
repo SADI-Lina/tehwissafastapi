@@ -22,6 +22,8 @@ class PointDInteret(Base):
     theme_id = Column(Integer, ForeignKey("theme.id"))
     categorie_id = Column(Integer, ForeignKey("categorie.id"))
     moyenne_etoiles = Column(Float, default=0)
+    lng = Column(Float)
+    lat = Column(Float)
 
     adresse = relationship("Adresse", backref="points_d_interet")
     theme = relationship("Theme", backref="points_d_interet")

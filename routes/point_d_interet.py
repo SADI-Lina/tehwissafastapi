@@ -28,7 +28,9 @@ def create_point_d_interet(point: PointDInteretCreate, db: Session = Depends(get
         nbr_visites=point.nbr_visites,
         adresse_id=point.adresse_id,
         theme_id=point.theme_id,
-        categorie_id=point.categorie_id
+        categorie_id=point.categorie_id,
+        lng = point.lng,
+        lat = point.lat
     )
     db.add(db_point)
     db.commit()
