@@ -8,6 +8,7 @@ from models.commentaire import Commentaire as DBCommentaire
 from models.point_d_interet import PointDInteret
 from models.point_d_interet import PointDInteret as DBPointDInteret
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import func
 
 app = FastAPI()
 
@@ -52,3 +53,8 @@ def get_commentaires_by_point_id(point_id: int, db: Session = Depends(get_db)):
     if not comments:
         raise HTTPException(status_code=404, detail="No comments found for the specified point of interest")
     return comments
+
+@router.get("/statistics/commentaires_count", response_model=int)
+def count_commentaires(db: Session = Depends(get_db)):
+    count = db.query(func.count(DBCommentaire.id)).scalar()
+    return count

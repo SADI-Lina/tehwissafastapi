@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import point_d_interet , adresse , theme , categorie , image , commentaire , tourist_user , evenement , type_event,moyen_transport
+from routes import stat, point_d_interet , adresse , theme , categorie , image , commentaire , tourist_user , evenement , type_event,moyen_transport
 from config.db import engine
 
 app = FastAPI()
@@ -24,6 +24,7 @@ app.include_router(evenement.router)
 app.include_router(type_event.router)
 app.include_router(moyen_transport.router)
 app.include_router(image.router)
+app.include_router(stat.router)
 
 # Create the database tables
 from models.point_d_interet import Base

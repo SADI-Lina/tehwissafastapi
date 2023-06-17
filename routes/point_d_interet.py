@@ -5,10 +5,7 @@ from sqlalchemy import desc
 from config.db import get_db
 from schemas.point_d_interet import PointDInteretCreate, PointDInteret
 from models.point_d_interet import PointDInteret as DBPointDInteret
-from routes.adresse import get_adresses
-from models.adresse import Adresse
-from models.categorie import Categorie
-from models.theme import Theme
+from sqlalchemy import func
 
 router = APIRouter(tags=["PointDInterets"])
 
@@ -124,3 +121,8 @@ def get_recommendations(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No recommended points of interest found")
 
     return points
+
+@router.get("/statistics/point_d_interet_count", response_model=int)
+def get_point_d_interet_count(db: Session = Depends(get_db)):
+    count = db.query(func.count(DBPointDInteret.id)).scalar()
+    return count
