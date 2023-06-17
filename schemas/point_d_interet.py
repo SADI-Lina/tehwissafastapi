@@ -16,6 +16,8 @@ class PointDInteretBase(BaseModel):
     adresse_id: int
     theme_id: int
     categorie_id: int
+    lng:float
+    lat:float
 
 class PointDInteretCreate(PointDInteretBase):
     pass

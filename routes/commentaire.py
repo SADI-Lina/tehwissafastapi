@@ -1,13 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
 from config.db import get_db
 from schemas.commentaire import CommentaireCreate, Commentaire
 from models.commentaire import Commentaire as DBCommentaire
+from models.point_d_interet import PointDInteret
+from models.point_d_interet import PointDInteret as DBPointDInteret
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 
+app = FastAPI()
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 router = APIRouter(tags=["Commentaire"])
 
 @router.post("/commentaire", response_model=Commentaire)
