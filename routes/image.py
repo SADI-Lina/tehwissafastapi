@@ -62,3 +62,14 @@ def delete_image(image_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "Image deleted successfully"}
+
+@router.get("/point/{point_id}/first_image_path", response_model=str)
+def get_first_image_path(point_id: int, db: Session = Depends(get_db)):
+    db_point = db.query(DBPointDInteret).get(point_id)
+    if db_point is None:
+        raise HTTPException(status_code=404, detail="Point of Interest not found")
+
+    if not db_point.images:
+        raise HTTPException(status_code=404, detail="No images found for the Point of Interest")
+
+    return db_point.images[0].path

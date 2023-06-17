@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import stat, point_d_interet , adresse , theme , categorie , image , commentaire , tourist_user , evenement , type_event,moyen_transport
+from routes import stat, most_visited, point_d_interet , adresse , theme , categorie , image , commentaire , tourist_user , evenement , type_event,moyen_transport
 from config.db import engine
 
 app = FastAPI()
@@ -16,6 +16,7 @@ app.add_middleware(
 # Include the point router
 app.include_router(point_d_interet.router)
 app.include_router(adresse.router)
+app.include_router(most_visited.router)
 app.include_router(theme.router)
 app.include_router(categorie.router)
 app.include_router(commentaire.router)

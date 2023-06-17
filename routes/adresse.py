@@ -61,3 +61,15 @@ from typing import List
 
 def get_adresses(db: Session) -> List[Adresse]:
     return db.query(Adresse).all()
+
+@router.get("/adresse/{adresse_id}/wilaya", response_model=str)
+def get_wilaya_of_point(adresse_id: int, db: Session = Depends(get_db)):
+    db_adresse = db.query(DBAdresse).get(adresse_id)
+    if db_adresse is None:
+        raise HTTPException(status_code=404, detail="Adresse not found")
+
+    wilaya = db_adresse.wilaya
+    if wilaya is None:
+        raise HTTPException(status_code=404, detail="Wilaya not found")
+
+    return wilaya.designation
