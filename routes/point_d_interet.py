@@ -1,11 +1,26 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException , Form
+from fastapi import APIRouter, Depends, FastAPI, HTTPException , Form
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from config.db import get_db
 from schemas.point_d_interet import PointDInteretCreate, PointDInteret
 from models.point_d_interet import PointDInteret as DBPointDInteret
 from sqlalchemy import func
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+
+
 
 router = APIRouter(tags=["PointDInterets"])
 
@@ -45,7 +60,7 @@ def get_all_points_d_interet(db: Session = Depends(get_db)):
     return points
 
 
-@router.get("/points_d_interet/filtre/{categorie_id}", response_model=List[PointDInteret])
+@router.get("/points_d_interet/filtre_cat/{categorie_id}", response_model=List[PointDInteret])
 def get_points_d_interet_by_category(categorie_id: int, db: Session = Depends(get_db)):
     points = db.query(DBPointDInteret).filter(DBPointDInteret.categorie_id == categorie_id).all()
     
@@ -56,7 +71,7 @@ def get_points_d_interet_by_category(categorie_id: int, db: Session = Depends(ge
 
 
 
-@router.get("/points_d_interet/filtre/{theme_id}", response_model=List[PointDInteret])
+@router.get("/points_d_interet/filtre_them/{theme_id}", response_model=List[PointDInteret])
 def get_points_d_interet_by_theme(theme_id: int, db: Session = Depends(get_db)):
     points = db.query(DBPointDInteret).filter(DBPointDInteret.theme_id == theme_id).all()
     

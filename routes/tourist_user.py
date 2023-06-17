@@ -29,14 +29,14 @@ def create_tourist_user(touriste: TouristUserCreate, db: Session = Depends(get_d
     return  db_touriste
 
 
-@router.post("/login")
-def tourist_user_login(email: str, password: str, db: Session = Depends(get_db)):
-    user = db.query(DBTouristUser).filter(DBTouristUser.email == email).first()
+@router.post("/login",response_model= TouristUser)
+def tourist_user_login(touriste: TouristUserCreate, db: Session = Depends(get_db)):
+    user = db.query(DBTouristUser).filter(DBTouristUser.username == touriste.username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    if not user.check_password(password):
+    if not user.check_password(touriste.password):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    return {"user": user}
+    return user
 
 
 
